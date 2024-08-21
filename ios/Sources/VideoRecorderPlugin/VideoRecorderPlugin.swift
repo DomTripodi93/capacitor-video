@@ -1,23 +1,40 @@
 import Foundation
 import Capacitor
+import AVFoundation
+import MobileCoreServices
 
-/**
- * Please read the Capacitor iOS Plugin Development Guide
- * here: https://capacitorjs.com/docs/plugins/ios
- */
 @objc(VideoRecorderPlugin)
-public class VideoRecorderPlugin: CAPPlugin, CAPBridgedPlugin {
-    public let identifier = "VideoRecorderPlugin"
-    public let jsName = "VideoRecorder"
-    public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise)
-    ]
-    private let implementation = VideoRecorder()
+public class VideoRecorderPlugin: CAPPlugin, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
+    var call: CAPPluginCall?
+
+    @objc func recordVideo(_ call: CAPPluginCall) {
+        self.call = call
+        DispatchQueue.main.async {
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                let videoPicker = UIImagePickerController()
+                videoPicker.delegate = self
+                videoPicker.sourceType = .camera
+                videoPicker.mediaTypes = [kUTTypeMovie as String]
+                videoPicker.videoQuality = .typeMedium  // Adjust the quality if needed
+                self.bridge?.viewController?.present(videoPicker, animated: true, completion: nil)
+            } else {
+                call.reject("Camera not available")
+            }
+        }
+    }
+
+    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        if let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
+            call?.resolve(["videoUrl": videoURL.absoluteString])
+        } else {
+            call?.reject("Failed to capture video")
+        }
+    }
+
+    public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+        call?.reject("User cancelled video recording")
     }
 }

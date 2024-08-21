@@ -1,22 +1,41 @@
-package com.domtripcode.plugins.video;
-
-import com.getcapacitor.JSObject;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
+import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
-import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.PluginResult;
 
 @CapacitorPlugin(name = "VideoRecorder")
 public class VideoRecorderPlugin extends Plugin {
 
-    private VideoRecorder implementation = new VideoRecorder();
+    static final int REQUEST_VIDEO_CAPTURE = 1;
+    private PluginCall call;
 
     @PluginMethod
-    public void echo(PluginCall call) {
-        String value = call.getString("value");
+    public void recordVideo(PluginCall call) {
+        this.call = call;
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivityForResult(call, takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        } else {
+            call.reject("Unable to open camera");
+        }
+    }
 
-        JSObject ret = new JSObject();
-        ret.put("value", implementation.echo(value));
-        call.resolve(ret);
+    @Override
+    protected void handleOnActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == Activity.RESULT_OK) {
+            Uri videoUri = data.getData();
+            if (videoUri != null) {
+                call.resolve(new JSObject().put("videoUri", videoUri.toString()));
+            } else {
+                call.reject("Video URI is null");
+            }
+        } else {
+            call.reject("Video recording failed");
+        }
     }
 }

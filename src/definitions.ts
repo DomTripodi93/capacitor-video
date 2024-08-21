@@ -1,3 +1,3 @@
 export interface VideoRecorderPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
+  recordVideo(): Promise<{ videoUri?: string; videoUrl?: string }>;
 }

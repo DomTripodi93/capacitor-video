@@ -3,8 +3,8 @@ import { WebPlugin } from '@capacitor/core';
 import type { VideoRecorderPlugin } from './definitions';
 
 export class VideoRecorderWeb extends WebPlugin implements VideoRecorderPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+  async recordVideo(): Promise<{ videoUri: string; videoUrl?: string }> {
+    console.log('recordVideo is not implemented for the web');
+    throw new Error('Video recording is not supported on the web.');
   }
 }
