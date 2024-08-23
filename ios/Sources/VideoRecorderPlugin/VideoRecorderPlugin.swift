@@ -6,6 +6,11 @@ import MobileCoreServices
 @objc(VideoRecorderPlugin)
 public class VideoRecorderPlugin: CAPPlugin, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
+    public let identifier = "VideoRecorderPlugin"
+    public let jsName = "VideoRecorder"
+    // public let pluginMethods: [CAPPluginMethod] = [
+    //     CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise)
+    // ]
     var call: CAPPluginCall?
 
     @objc func recordVideo(_ call: CAPPluginCall) {

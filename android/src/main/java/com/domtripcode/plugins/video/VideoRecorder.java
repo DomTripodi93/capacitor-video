@@ -1,15 +1,18 @@
+package com.domtripcode.plugins.video;
+
 import android.app.Activity;
 import android.content.Intent;
-import android.provider.MediaStore;
 import android.net.Uri;
+import android.provider.MediaStore;
+
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
-import com.getcapacitor.PluginResult;
+import com.getcapacitor.JSObject;
 
 @CapacitorPlugin(name = "VideoRecorder")
-public class VideoRecorderPlugin extends Plugin {
+public class VideoRecorder extends Plugin {
 
     static final int REQUEST_VIDEO_CAPTURE = 1;
     private PluginCall call;

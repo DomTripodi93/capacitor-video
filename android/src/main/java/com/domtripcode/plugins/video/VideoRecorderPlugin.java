@@ -1,12 +1,15 @@
+package com.domtripcode.plugins.video;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
+
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
-import com.getcapacitor.PluginResult;
+import com.getcapacitor.JSObject;
 
 @CapacitorPlugin(name = "VideoRecorder")
 public class VideoRecorderPlugin extends Plugin {
@@ -34,8 +37,6 @@ public class VideoRecorderPlugin extends Plugin {
             } else {
                 call.reject("Video URI is null");
             }
-        } else {
-            call.reject("Video recording failed");
         }
     }
 }
